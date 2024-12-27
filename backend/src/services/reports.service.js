@@ -54,9 +54,30 @@ async function remove(reportId) {
   }
 }
 
+async function statistic() {
+  try {
+    const totalReports = await db.Report.count();
+
+    const recipientsPerProgram = await db.Report.findAll({
+      attributes: ['nama_program', [db.Sequelize.fn('SUM', db.Sequelize.col('jml_penerima')), 'total_penerima']],
+      group: ['nama_program'],
+    });
+
+    const distributionByRegion = await db.Report.findAll({
+      attributes: ['wilayah', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'jumlah_laporan']],
+      group: ['wilayah'],
+    });
+
+    return new ApiSuccess(status.OK, 'GET STATISTIC SUCCESS', { totalReports, recipientsPerProgram, distributionByRegion });
+  } catch (error) {
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
 module.exports = {
   getAll,
   create,
   update,
   remove,
+  statistic,
 };

@@ -4,6 +4,7 @@ const reportController = require('../controllers/reports.controller.js');
 const router = Router();
 
 router.get('/', reportController.getAllReports);
+router.get('/statistic', reportController.getStatistic);
 router.post('/', reportController.createReports);
 router.patch('/:reportId', reportController.updateReports);
 router.delete('/:reportId', reportController.deleteReport);

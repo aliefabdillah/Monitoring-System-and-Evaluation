@@ -36,9 +36,19 @@ async function deleteReport(req, res, next) {
   }
 }
 
+async function getStatistic(req, res, next) {
+  try {
+    const statisticResult = await reportService.statistic();
+    res.status(statisticResult.statusCode).send(statisticResult);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getAllReports,
   createReports,
   updateReports,
   deleteReport,
+  getStatistic,
 };
