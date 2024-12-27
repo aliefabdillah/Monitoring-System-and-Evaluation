@@ -1,6 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { v4: uuidv4 } = require('uuid');
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -15,16 +13,13 @@ module.exports = {
     */
     return queryInterface.bulkInsert('Reports', [
       {
-        id: uuidv4(),
         nama_program: 'BANSOS',
         jml_penerima: 200,
         wilayah: '11,12,13',
         tgl_penyaluran: new Date(),
         bukti: 'http://image.url',
-        // catatan: '',
+        catatan: '',
         status: 'Pending',
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ]);
   },
