@@ -38,7 +38,7 @@ async function update(body, reportId) {
     Object.assign(updatedReport, body);
     await updatedReport.save();
 
-    return new ApiSuccess(status.CREATED, 'CREATE BOOK SUCCESS', updatedReport);
+    return new ApiSuccess(status.OK, 'UPDATE REPORT SUCCESS', updatedReport);
   } catch (error) {
     throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
   }
