@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     tgl_penyaluran: DataTypes.DATE,
     bukti: DataTypes.STRING,
     catatan: DataTypes.STRING,
+    status: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Report',
