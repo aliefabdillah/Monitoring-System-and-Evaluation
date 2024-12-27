@@ -5,5 +5,6 @@ const router = Router();
 
 router.get('/', reportController.getAllReports);
 router.post('/', reportController.createReports);
+router.patch('/:reportId', reportController.updateReports);
 
 module.exports = router;

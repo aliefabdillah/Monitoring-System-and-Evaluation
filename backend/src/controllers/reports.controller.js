@@ -18,7 +18,17 @@ async function createReports(req, res, next) {
   }
 }
 
+async function updateReports(req, res, next) {
+  try {
+    const reportResult = await reportService.update(req.body, req.params.reportId);
+    res.status(reportResult.statusCode).send(reportResult);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getAllReports,
   createReports,
+  updateReports,
 };

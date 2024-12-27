@@ -31,7 +31,21 @@ async function create(body) {
   }
 }
 
+async function update(body, reportId) {
+  try {
+    const updatedReport = await db.Report.findByPk(reportId);
+
+    Object.assign(updatedReport, body);
+    await updatedReport.save();
+
+    return new ApiSuccess(status.CREATED, 'CREATE BOOK SUCCESS', updatedReport);
+  } catch (error) {
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
 module.exports = {
   getAll,
   create,
+  update,
 };
