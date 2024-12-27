@@ -11,7 +11,7 @@ async function getAllReports(req, res, next) {
 
 async function createReports(req, res, next) {
   try {
-    const reportResult = await reportService.create(req.body);
+    const reportResult = await reportService.create(req.body, req.file);
     res.status(reportResult.statusCode).send(reportResult);
   } catch (error) {
     next(error);
@@ -20,7 +20,7 @@ async function createReports(req, res, next) {
 
 async function updateReports(req, res, next) {
   try {
-    const reportResult = await reportService.update(req.body, req.params.reportId);
+    const reportResult = await reportService.update(req.body, req.file, req.params.reportId);
     res.status(reportResult.statusCode).send(reportResult);
   } catch (error) {
     next(error);
