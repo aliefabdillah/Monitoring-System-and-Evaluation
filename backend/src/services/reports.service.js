@@ -19,10 +19,14 @@ async function getAll() {
   return new ApiSuccess(status.OK, 'GET REPORTS SUCCESS', reportsData);
 }
 
-async function create(body) {
+async function create(body, file) {
   try {
+    const fileUrl = file.path;
+    const fileName = file.fileName;
+
     const createdReports = await db.Report.create({
       id: uuidv4(),
+      bukti: fileUrl,
       ...body,
     });
     return new ApiSuccess(status.CREATED, 'CREATE BOOK SUCCESS', createdReports);
@@ -31,9 +35,18 @@ async function create(body) {
   }
 }
 
-async function update(body, reportId) {
+async function update(body, file, reportId) {
   try {
+
     const updatedReport = await db.Report.findByPk(reportId);
+
+    let fileUrl = updatedReport.bukti;
+    if (file) {
+      fileUrl = file.path;
+      const fileName = file.fileName;
+      // update file
+      updatedReport.bukti = fileUrl
+    }
 
     Object.assign(updatedReport, body);
     await updatedReport.save();
