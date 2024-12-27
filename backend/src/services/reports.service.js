@@ -44,8 +44,19 @@ async function update(body, reportId) {
   }
 }
 
+async function remove(reportId) {
+  try {
+    await db.Report.destroy({ where: { id: reportId } });
+
+    return new ApiSuccess(status.OK, 'DELETE REPORT SUCCESS');
+  } catch (error) {
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
 module.exports = {
   getAll,
   create,
   update,
+  remove,
 };

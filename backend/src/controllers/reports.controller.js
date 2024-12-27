@@ -27,8 +27,18 @@ async function updateReports(req, res, next) {
   }
 }
 
+async function deleteReport(req, res, next) {
+  try {
+    const reportResult = await reportService.remove(req.params.reportId);
+    res.status(reportResult.statusCode).send(reportResult);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getAllReports,
   createReports,
   updateReports,
+  deleteReport,
 };
