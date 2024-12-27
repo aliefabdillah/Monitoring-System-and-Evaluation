@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const path = require('path');
 
 require('dotenv').config();
 
@@ -16,14 +15,7 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
-  });
-});
-
-app.use('/api/v1', api);
+app.use(express.urlencoded({ extended: true }))
 
 (async () => {
   try {
@@ -33,6 +25,8 @@ app.use('/api/v1', api);
     console.error('Unable to connect to the database:', error);
   }
 })();
+
+app.use('/api/v1', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
