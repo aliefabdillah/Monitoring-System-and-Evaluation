@@ -1,6 +1,5 @@
 const express = require('express');
-
-const emojis = require('./emojis');
+const reports = require('./reports.js');
 
 const router = express.Router();
 
@@ -10,6 +9,6 @@ router.get('/', (req, res) => {
   });
 });
 
-router.use('/emojis', emojis);
+router.use('/reports', reports);
 
 module.exports = router;
