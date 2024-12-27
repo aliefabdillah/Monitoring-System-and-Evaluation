@@ -19,14 +19,14 @@ app.use(
   express.urlencoded({ extended: true })
 );
 
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection to the database has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-})();
+  (async () => {
+    try {
+      await sequelize.authenticate();
+      console.log('Connection to the database has been established successfully.');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+    }
+  })();
 
 app.use('/api/v1', api);
 
