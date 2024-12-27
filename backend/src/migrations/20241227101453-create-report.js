@@ -1,12 +1,14 @@
 /** @type {import('sequelize-cli').Migration} */
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Reports', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.STRING(36),
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.UUID,
+        defaultValue: uuidv4(),
       },
       nama_program: {
         type: Sequelize.STRING,
@@ -34,10 +36,12 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: new Date(),
       },
     });
   },
