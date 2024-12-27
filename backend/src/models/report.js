@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   Report.init({
     nama_program: DataTypes.STRING,
     jml_penerima: DataTypes.INTEGER,
-    wwilayah: DataTypes.STRING,
+    wilayah: DataTypes.STRING,
     tgl_penyaluran: DataTypes.DATE,
     bukti: DataTypes.STRING,
     catatan: DataTypes.STRING,
