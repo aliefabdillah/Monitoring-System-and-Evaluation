@@ -22,7 +22,6 @@ async function getAll() {
 async function create(body, file) {
   try {
     const fileUrl = file.path;
-    const fileName = file.fileName;
 
     const createdReports = await db.Report.create({
       id: uuidv4(),
@@ -43,7 +42,6 @@ async function update(body, file, reportId) {
     let fileUrl = updatedReport.bukti;
     if (file) {
       fileUrl = file.path;
-      const fileName = file.fileName;
       // update file
       updatedReport.bukti = fileUrl
     }
