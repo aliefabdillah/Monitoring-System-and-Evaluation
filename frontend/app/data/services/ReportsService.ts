@@ -105,4 +105,28 @@ export class ReportsService {
         }
       });
   };
+
+  deleteReport = (reportId: string) => {
+    return this.instance
+      .delete(`/${reportId}`)
+      .then((res) => {
+        return res.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+          const errorResponse = {
+            code: error.response.status,
+            message: error.response.statusText,
+          };
+          return errorResponse;
+        } else {
+          const errorResponse = {
+            code: error.code,
+            message: error.message,
+            name: error.name,
+          };
+          return errorResponse;
+        }
+      });
+  };
 }
