@@ -9,7 +9,7 @@ async function getAll() {
   const reportsData = await db.Report.findAll({
     attributes: ['id', 'nama_program', 'jml_penerima', 'provinsi', 'kabupaten_kota', 'kecamatan', 'status'],
     order: [
-      ['createdAt', 'asc'],
+      ['createdAt', 'desc'],
     ],
   });
 
