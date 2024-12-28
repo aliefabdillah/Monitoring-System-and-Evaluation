@@ -35,6 +35,30 @@ export class ReportsService {
       });
   };
 
+  getDetailReport = (reportId: string) => {
+    return this.instance
+      .get(`/${reportId}`)
+      .then((res) => {
+        return res.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+          const errorResponse = {
+            code: error.response.status,
+            message: error.response.statusText,
+          };
+          return errorResponse;
+        } else {
+          const errorResponse = {
+            code: error.code,
+            message: error.message,
+            name: error.name,
+          };
+          return errorResponse;
+        }
+      });
+  };
+
   verifyReport = (reportId: string, body: any) => {
     return this.instance
       .patch(`/${reportId}`, body)
