@@ -7,21 +7,24 @@ import { ApiError } from "./types/ApiError";
 import { ListReport } from "./types/Report";
 import { reportsService } from "./data/services";
 import ErrorToast from "./components/ErrorToast";
+import Loading from "./components/Loading";
 
 export default function Dashboard() {
-  const [searchValue, setSearchValue] = useState("")
+  const [searchValue, setSearchValue] = useState("");
   const [reportData, setReportData] = useState<ListReport[]>([]);
   const [errorData, setErrorData] = useState<ApiError>({
     code: 0,
     message: "",
   });
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     loadReport();
   }, []);
 
   const loadReport = async () => {
+    setIsLoading(true);
     const response = await reportsService.getListReport();
     if (response.data) {
       const reportResult: ListReport[] = response.data;
@@ -33,6 +36,7 @@ export default function Dashboard() {
       });
       setIsToastOpen(true);
     }
+    setIsLoading(false);
   };
 
   const handleCloseToast = () => {
@@ -54,7 +58,12 @@ export default function Dashboard() {
         <div className="w-2/3">
           <div className="flex flex-row  justify-between mb-4">
             <label className="input input-bordered flex items-center gap-2 w-fit mb-1">
-              <input type="text" className="grow" placeholder="Cari Program/Wilayah" onChange={handleSearchChange} />
+              <input
+                type="text"
+                className="grow"
+                placeholder="Cari Program/Wilayah"
+                onChange={handleSearchChange}
+              />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -75,7 +84,13 @@ export default function Dashboard() {
               </button>
             </Link>
           </div>
-          <Table dataTable={reportData} searchValue={searchValue}/>
+          {isLoading ? (
+            <div className="flex items-center justify-center mt-24">
+              <Loading />
+            </div>
+          ) : (
+            <Table dataTable={reportData} searchValue={searchValue} />
+          )}
         </div>
       </Base>
     </>
