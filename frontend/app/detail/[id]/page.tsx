@@ -4,14 +4,30 @@ import ErrorToast from "@/app/components/ErrorToast";
 import { reportsService } from "@/app/data/services";
 import { ApiError } from "@/app/types/ApiError";
 import { DetailReport } from "@/app/types/Report";
+import { convertIDDate } from "@/app/utils/dateFormatter";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+const fetchWilayahName = async (
+  id: string | undefined,
+  type: "province" | "district" | "regency"
+) => {
+  const response = await fetch(
+    `https://www.emsifa.com/api-wilayah-indonesia/api/${type}/${id}.json`
+  );
+
+  const data = await response.json();
+  return data.name;
+};
 
 export default function DetailPage() {
   const { id } = useParams();
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [reportData, setReportData] = useState<DetailReport>();
+  const [province, setProvince] = useState("");
+  const [regency, setRegency] = useState("");
+  const [district, setDistrict] = useState("");
   const [errorData, setErrorData] = useState<ApiError>({
     code: 0,
     message: "",
@@ -33,6 +49,26 @@ export default function DetailPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const fetchAllNames = async () => {
+      const province = await fetchWilayahName(reportData?.provinsi, "province");
+      const regency = await fetchWilayahName(
+        reportData?.kabupaten_kota,
+        "regency"
+      );
+      const district = await fetchWilayahName(
+        reportData?.kecamatan,
+        "district"
+      );
+
+      setProvince(province);
+      setRegency(regency);
+      setDistrict(district);
+    };
+
+    fetchAllNames();
+  }, [reportData]);
 
   const handleCloseToast = () => {
     setIsToastOpen(false);
@@ -75,27 +111,34 @@ export default function DetailPage() {
             </p>
           </div>
           <div className="text-xl flex flex-row items-start gap-2">
-            <li className="w-1/3 md:h-1/4">Penerima</li>
+            <li className="w-1/3 md:w-2/3">Penerima</li>
             <p className="w-fit md:text-start text-end">:</p>
             <span className="md:w-full w-2/3">{reportData?.jml_penerima}</span>
           </div>
           <div className="text-xl flex flex-row items-center gap-2">
-            <li className="w-1/3 md:h-1/4">Wilayah</li>
+            <li className="w-1/3 md:w-2/3">Provinsi</li>
+            <p className="w-fit md:text-start text-end">:</p>
+            <span className="md:w-full w-2/3">{province}</span>
+          </div>
+          <div className="text-xl flex flex-row items-center gap-2">
+            <li className="w-1/3 md:w-2/3">Kabupaten / Kota</li>
+            <p className="w-fit md:text-start text-end">:</p>
+            <span className="md:w-full w-2/3">{regency}</span>
+          </div>
+          <div className="text-xl flex flex-row items-center gap-2">
+            <li className="w-1/3 md:w-2/3">Kecamatan</li>
+            <p className="w-fit md:text-start text-end">:</p>
+            <span className="md:w-full w-2/3">{district}</span>
+          </div>
+          <div className="text-xl flex flex-row items-center gap-2">
+            <li className="w-1/3 md:w-2/3">Tanggal Penyaluran</li>
             <p className="w-fit md:text-start text-end">:</p>
             <span className="md:w-full w-2/3">
-              {reportData?.provinsi} / {reportData?.kabupaten_kota} /{" "}
-              {reportData?.kecamatan}
+              {convertIDDate(reportData?.tgl_penyaluran)}
             </span>
           </div>
           <div className="text-xl flex flex-row items-center gap-2">
-            <li className="w-1/3 md:h-1/4">Tanggal Penyaluran</li>
-            <p className="w-fit md:text-start text-end">:</p>
-            <span className="md:w-full w-2/3">
-              {reportData?.tgl_penyaluran}
-            </span>
-          </div>
-          <div className="text-xl flex flex-row items-center gap-2">
-            <li className="w-1/3 md:h-1/4">Bukti Penyaluran</li>
+            <li className="w-1/3 md:w-2/3">Bukti Penyaluran</li>
             <p className="w-fit md:text-start text-end">:</p>
             <Link
               href={`${reportData?.bukti}`}
@@ -106,7 +149,7 @@ export default function DetailPage() {
             </Link>
           </div>
           <div className="text-xl flex flex-row items-center gap-2">
-            <li className="w-1/3 md:h-1/4">Catatan</li>
+            <li className="w-1/3 md:w-2/3">Catatan</li>
             <p className="w-fit md:text-start text-end">:</p>
             <span className="md:w-full w-2/3">{reportData?.catatan}</span>
           </div>

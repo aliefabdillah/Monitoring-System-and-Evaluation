@@ -1,8 +1,20 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ListReport } from "../types/Report";
 import DeleteModal from "./DeleteModal";
+
+const fetchWilayahName = async (
+  id: string,
+  type: "province" | "district" | "regency"
+) => {
+  const response = await fetch(
+    `https://www.emsifa.com/api-wilayah-indonesia/api/${type}/${id}.json`
+  );
+
+  const data = await response.json();
+  return data.name;
+};
 
 export default function Table({
   dataTable,
@@ -12,8 +24,38 @@ export default function Table({
   searchValue: string;
 }) {
   const [deletedId, setDeletedId] = useState("");
+  const [dataToShow, setDataToShow] = useState<ListReport[]>([]);
 
-  const dataToRender = dataTable.filter((report) => {
+  useEffect(() => {
+    const fetchAllNames = async () => {
+      const formattedResult: ListReport[] = await Promise.all(
+        dataTable.map(async (report: ListReport) => {
+          const province = await fetchWilayahName(report.provinsi, "province");
+          const regency = await fetchWilayahName(
+            report.kabupaten_kota,
+            "regency"
+          );
+          const district = await fetchWilayahName(report.kecamatan, "district");
+
+          return {
+            id: report.id,
+            nama_program: report.nama_program,
+            jml_penerima: report.jml_penerima,
+            status: report.status,
+            provinsi: province,
+            kabupaten_kota: regency,
+            kecamatan: district,
+          };
+        })
+      );
+
+      setDataToShow(formattedResult);
+    };
+
+    fetchAllNames();
+  }, [dataTable]);
+
+  const dataToRender = dataToShow.filter((report) => {
     const matchesProgram = report.nama_program
       .toLowerCase()
       .includes(searchValue.toLowerCase());
