@@ -33,21 +33,27 @@ export default function BasePage({
               </svg>
             </label>
           </div>
-          <div className="mx-2 flex-1 px-2 font-outfit text-2xl">Admin Panel</div>
+          <div className="mx-2 flex-1 px-2 font-outfit text-2xl">
+            Admin Panel
+          </div>
           <div className="hidden flex-none lg:block">
             <ul className="menu menu-horizontal">
               {/* Navbar menu content here */}
               <li>
-                <Link href="/" className="font-outfit">Dashboard</Link>
+                <Link href="/" className="font-outfit">
+                  Dashboard
+                </Link>
               </li>
               <li>
-                <Link href="/verification" className="font-outfit">Verification</Link>
+                <Link href="/verification" className="font-outfit">
+                  Verification
+                </Link>
               </li>
             </ul>
           </div>
         </div>
         {/* Page content here */}
-        {children}
+        <div className="w-full flex flex-col items-center justify-center py-10">{children}</div>
       </div>
       <div className="drawer-side">
         <label
