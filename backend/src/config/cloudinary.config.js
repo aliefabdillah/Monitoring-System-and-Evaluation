@@ -22,9 +22,8 @@ const uploadFile = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
 const deleteFile = async (filename) => {
   try {
-
     const result = await cloudinary.uploader.destroy(filename, {
-      resource_type: 'image', invalidate: true
+      resource_type: 'image', invalidate: true,
     });
 
     if (result.result === 'ok') {
@@ -38,7 +37,7 @@ const deleteFile = async (filename) => {
     console.error('Error deleting file:', error);
     return error;
   }
-}
+};
 
 module.exports = {
   uploadFile,

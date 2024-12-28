@@ -1,6 +1,7 @@
+// eslint-disable-next-line import/no-unresolved
 const { status } = require('http-status');
 const joiSchema = require('./utils/joiSchema.js');
-const { deleteFile } = require('./config/cloudinary.config.js')
+const { deleteFile } = require('./config/cloudinary.config.js');
 
 function notFound(req, res, next) {
   res.status(404);
@@ -41,7 +42,7 @@ const validate = (path) => async (req, res, next) => {
       },
     };
 
-    const file = req.file
+    const { file } = req;
     if (file && file.filename) {
       await deleteFile(file.filename);
     }

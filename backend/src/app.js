@@ -5,9 +5,9 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-const middlewares = require('./middlewares');
-const api = require('./api');
-const sequelize = require('./config/db.config');
+const middlewares = require('./middlewares.js');
+const api = require('./api/index.js');
+const sequelize = require('./config/db.config.js');
 
 const app = express();
 
@@ -16,17 +16,17 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(
-  express.urlencoded({ extended: true })
+  express.urlencoded({ extended: true }),
 );
 
-  (async () => {
-    try {
-      await sequelize.authenticate();
-      console.log('Connection to the database has been established successfully.');
-    } catch (error) {
-      console.error('Unable to connect to the database:', error);
-    }
-  })();
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection to the database has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+})();
 
 app.use('/api/v1', api);
 

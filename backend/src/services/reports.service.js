@@ -36,14 +36,13 @@ async function create(body, file) {
 
 async function update(body, file, reportId) {
   try {
-
     const updatedReport = await db.Report.findByPk(reportId);
 
     let fileUrl = updatedReport.bukti;
     if (file) {
       fileUrl = file.path;
       // update file
-      updatedReport.bukti = fileUrl
+      updatedReport.bukti = fileUrl;
     }
 
     Object.assign(updatedReport, body);

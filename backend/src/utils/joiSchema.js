@@ -11,7 +11,7 @@ const createReport = Joi.object({
     size: Joi.number().max(2 * 1024 * 1024).required(),
   }),
   status: Joi.string().required(),
-})
+});
 
 const updateReport = Joi.object({
   nama_program: Joi.string(),
@@ -24,9 +24,9 @@ const updateReport = Joi.object({
     size: Joi.number().max(2 * 1024 * 1024),
   }),
   status: Joi.string(),
-})
+});
 
 module.exports = {
   '/create': createReport,
   '/update': updateReport,
-}
+};

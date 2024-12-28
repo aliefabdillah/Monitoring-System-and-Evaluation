@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const reportController = require('../controllers/reports.controller.js');
-const { validate } = require('../middlewares.js')
-const { uploadFile } = require('../config/cloudinary.config.js')
+const { validate } = require('../middlewares.js');
+const { uploadFile } = require('../config/cloudinary.config.js');
 
 const router = Router();
 
