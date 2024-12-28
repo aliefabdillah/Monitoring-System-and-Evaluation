@@ -13,7 +13,6 @@ const createReport = Joi.object({
     mimetype: Joi.string().valid('image/jpeg', 'image/png', 'image/jpg', 'application/pdf').required(),
     size: Joi.number().max(2 * 1024 * 1024).required(),
   }),
-  status: Joi.string().required(),
 });
 
 const updateReport = Joi.object({

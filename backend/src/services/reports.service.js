@@ -41,6 +41,7 @@ async function create(body, file) {
     const createdReports = await db.Report.create({
       id: uuidv4(),
       bukti: fileUrl,
+      status: 'Pending',
       ...body,
     });
     return new ApiSuccess(status.CREATED, 'CREATE BOOK SUCCESS', createdReports);
