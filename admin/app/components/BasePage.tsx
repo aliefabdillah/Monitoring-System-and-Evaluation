@@ -7,7 +7,7 @@ export default function BasePage({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="drawer">
+    <div className="drawer min-h-screen">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
