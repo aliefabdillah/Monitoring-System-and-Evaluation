@@ -5,7 +5,7 @@ export default function SuccessModal({ message }: { message: string}) {
     <dialog id="success_modal" className={`modal modal-middle`}>
       <div className="modal-box w-fit flex flex-col items-center bg-white">
         <svg
-          className="h-48 w-48 fill-blue-400 dark:text-white"
+          className="h-48 w-48 fill-primary dark:text-white"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="48"

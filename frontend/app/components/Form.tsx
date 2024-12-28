@@ -8,6 +8,7 @@ import ErrorToast from "./ErrorToast";
 import { ApiError } from "../types/ApiError";
 import SuccessModal from "./SuccessModal";
 import { useRouter } from "next/navigation";
+import ModalLoadingLite from "./ModalLoading";
 
 interface Province {
   id: string;
@@ -148,6 +149,7 @@ export default function Form() {
 
   return (
     <>
+      <ModalLoadingLite isOpen={isLoading} />
       <SuccessModal message={formAddState?.message} />
       <ErrorToast
         error={errorData}
