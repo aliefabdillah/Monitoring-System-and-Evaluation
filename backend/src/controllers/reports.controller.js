@@ -9,6 +9,15 @@ async function getAllReports(req, res, next) {
   }
 }
 
+async function getReportsById(req, res, next) {
+  try {
+    const reportResult = await reportService.getById(req.params.reportId);
+    res.status(reportResult.statusCode).send(reportResult);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function createReports(req, res, next) {
   try {
     const reportResult = await reportService.create(req.body, req.file);
@@ -20,7 +29,7 @@ async function createReports(req, res, next) {
 
 async function updateReports(req, res, next) {
   try {
-    const reportResult = await reportService.update(req.body, req.file, req.params.reportId);
+    const reportResult = await reportService.update(req, req.params.reportId);
     res.status(reportResult.statusCode).send(reportResult);
   } catch (error) {
     next(error);
@@ -47,6 +56,7 @@ async function getStatistic(req, res, next) {
 
 module.exports = {
   getAllReports,
+  getReportsById,
   createReports,
   updateReports,
   deleteReport,
