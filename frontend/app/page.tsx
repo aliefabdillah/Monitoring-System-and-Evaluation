@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Base from "./components/Base";
 import Table from "./components/Table";
 
@@ -22,10 +23,12 @@ export default function Dashboard() {
                 />
               </svg>
             </label>
-            <button className="btn btn-primary text-white item">
-              {" "}
-              + Add Report
-            </button>
+            <Link href={'/form'}>
+              <button className="btn btn-success text-white item">
+                {" "}
+                + Add Report
+              </button>
+            </Link>
           </div>
           <Table />
         </div>

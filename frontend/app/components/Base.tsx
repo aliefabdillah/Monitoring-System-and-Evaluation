@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function Base({
@@ -35,18 +36,18 @@ export default function Base({
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               <li>
-                <a>Homepage</a>
+                <Link href="/">Homepage</Link>
               </li>
               <li>
-                <a>About</a>
+                <Link href="/form">Add Report</Link>
               </li>
             </ul>
           </div>
         </div>
         <div className="navbar-center">
-          <a className="font-outfit font-bold text-2xl">
+          <Link href="/" className="font-outfit font-bold text-2xl">
             Monitoring and Evaluation System
-          </a>
+          </Link>
         </div>
         <div className="navbar-end">
           <button className="btn btn-ghost btn-circle">
