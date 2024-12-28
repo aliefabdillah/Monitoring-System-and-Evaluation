@@ -2,13 +2,16 @@
 import axios from "axios";
 import Link from "next/link";
 import React, { useActionState, useEffect, useState } from "react";
-import { addReport } from "../data/actions/formReport";
+import { addReport, updateReport } from "../data/actions/formReport";
 import ZodErrors from "./ZodErrors";
 import ErrorToast from "./ErrorToast";
 import { ApiError } from "../types/ApiError";
 import SuccessModal from "./SuccessModal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ModalLoadingLite from "./ModalLoading";
+import { reportsService } from "../data/services";
+import { DetailReport } from "../types/Report";
+import { convertInputDate } from "../utils/dateFormatter";
 
 interface Province {
   id: string;
@@ -27,6 +30,10 @@ interface District {
 
 export default function Form() {
   const router = useRouter();
+  const queryParams = useSearchParams();
+  const edit = queryParams.get("edit");
+  const reportId = queryParams.get("report");
+
   const [isLoading, setIsLoading] = useState(false);
   const [isToastOpen, setIsToastOpen] = useState(false);
   const [errorData, setErrorData] = useState<ApiError>({
@@ -37,8 +44,11 @@ export default function Form() {
   const [formAddState, formAddAction] = useActionState(addReport, {
     data: null,
   });
+  const [formEditState, formEditAction] = useActionState(updateReport, {
+    data: null,
+  });
   const [file, setFile] = useState<File>();
-  const [formReportState, setFormReportState] = useState({
+  const [formReportState, setFormReportState] = useState<DetailReport>({
     id: "",
     nama_program: "",
     jml_penerima: 0,
@@ -48,6 +58,7 @@ export default function Form() {
     tgl_penyaluran: "",
     catatan: "",
     bukti: "",
+    status: "",
   });
 
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -80,12 +91,12 @@ export default function Form() {
         .then((res) => {
           setRegencies(res.data);
           setDistricts([]);
-          setSelectedRegency("");
+          setSelectedRegency(formReportState.kabupaten_kota || "");
           setSelectedDistrict("");
         })
         .catch((err) => console.error(err));
     }
-  }, [selectedProvince]);
+  }, [formReportState.kabupaten_kota, selectedProvince]);
 
   // Fetch Districts when Regency changes
   useEffect(() => {
@@ -96,26 +107,30 @@ export default function Form() {
         )
         .then((res) => {
           setDistricts(res.data);
-          setSelectedDistrict("");
+          setSelectedDistrict(formReportState.kecamatan || "");
         })
         .catch((err) => console.error(err));
     }
-  }, [selectedRegency]);
+  }, [formReportState.kecamatan, selectedRegency]);
 
   useEffect(() => {
-    if (!formAddState.isLoading) {
+    if (edit) {
+      loadEditedData();
+    }
+
+    if (!formAddState.isLoading || !formEditState.isLoading) {
       setIsLoading(false);
     }
 
-    if (formAddState.isError) {
+    if (formAddState.isError || formEditState.isError) {
       setErrorData({
-        code: formAddState?.apiErrors?.code,
-        message: formAddState?.apiErrors?.message,
+        code: formAddState?.apiErrors?.code || formEditState?.apiErrors?.code,
+        message: formAddState?.apiErrors?.message || formEditState?.apiErrors?.message,
       });
       setIsToastOpen(true);
     }
 
-    if (formAddState.isSuccess) {
+    if (formAddState.isSuccess || formEditState.isSuccess) {
       (
         document.getElementById("success_modal") as HTMLDialogElement
       ).showModal();
@@ -123,7 +138,23 @@ export default function Form() {
         router.push("/");
       }, 2000);
     }
-  }, [formAddState]);
+  }, [edit, formAddState, formEditState, router]);
+
+  const loadEditedData = async () => {
+    const response = await reportsService.getDetailReport(reportId as string);
+    if (response.data) {
+      const reportResult: DetailReport = response.data;
+      setFormReportState(reportResult);
+      setSelectedProvince(reportResult.provinsi);
+      setSelectedRegency(reportResult.kabupaten_kota);
+      setSelectedDistrict(reportResult.kecamatan);
+    } else {
+      setErrorData({
+        code: response.code,
+        message: response.message,
+      });
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -150,7 +181,7 @@ export default function Form() {
   return (
     <>
       <ModalLoadingLite isOpen={isLoading} />
-      <SuccessModal message={formAddState?.message} />
+      <SuccessModal message={formAddState?.message || formEditState?.message} />
       <ErrorToast
         error={errorData}
         isOpen={isToastOpen}
@@ -158,23 +189,23 @@ export default function Form() {
       />
       <form
         className="outline-1 outline outline-zinc-400 h-full w-2/3 py-4 px-7 rounded-md"
-        action={formAddAction}
+        action={edit ? formEditAction : formAddAction}
         onSubmit={() => setIsLoading(true)}
       >
         <h1 className="text-center font-poppins font-semibold text-xl my-4">
-          Report Form
+          {edit ? "Edit" : "Add"} Report
         </h1>
-        {/* {bookData && (
+        {edit && (
           <input
             type="text"
             placeholder="Type here"
             name="id"
             className="input input-bordered w-full"
-            value={formBookState.id}
+            value={formReportState.id}
             onChange={handleInputChange}
             hidden
           />
-        )} */}
+        )}
         <label className="form-control w-full max-w-full">
           <div className="label">
             <span className="label-text text-zinc-900">
@@ -183,7 +214,6 @@ export default function Form() {
           </div>
           <select
             className="select select-bordered join-item"
-            // defaultValue={""}
             value={formReportState.nama_program}
             onChange={handleInputChange}
             name="nama_program"
@@ -200,7 +230,7 @@ export default function Form() {
             <option value="Subsidi Listrik">Bantuan Subsidi Listrik</option>
           </select>
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.nama_program} />
+            <ZodErrors error={formAddState?.zodErrors?.nama_program || formEditState?.zodErrors?.nama_program} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -223,7 +253,7 @@ export default function Form() {
             ))}
           </select>
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.provinsi} />
+            <ZodErrors error={formAddState?.zodErrors?.provinsi || formEditState?.zodErrors?.provinsi} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -247,7 +277,7 @@ export default function Form() {
             ))}
           </select>
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.kabupaten_kota} />
+            <ZodErrors error={formAddState?.zodErrors?.kabupaten_kota || formEditState?.zodErrors?.kabupaten_kota} />
           </div>
         </label>
         <label className={`form-control w-full max-w-full`}>
@@ -271,7 +301,7 @@ export default function Form() {
             ))}
           </select>
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.kecamatan} />
+            <ZodErrors error={formAddState?.zodErrors?.kecamatan || formEditState?.zodErrors?.kecamatan} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -291,7 +321,7 @@ export default function Form() {
             className="input bg-white input-bordered w-full max-w-full text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.jml_penerima} />
+            <ZodErrors error={formAddState?.zodErrors?.jml_penerima || formEditState?.zodErrors?.jml_penerima} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -304,13 +334,13 @@ export default function Form() {
             id="tgl_penyaluran"
             name="tgl_penyaluran"
             type="date"
-            value={formReportState.tgl_penyaluran}
+            value={convertInputDate(formReportState.tgl_penyaluran)}
             onChange={handleInputChange}
             placeholder="date"
             className="input bg-white input-bordered w-full max-w-full text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.tgl_penyaluran} />
+            <ZodErrors error={formAddState?.zodErrors?.tgl_penyaluran || formEditState?.zodErrors?.tgl_penyaluran} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -328,16 +358,16 @@ export default function Form() {
             className="file-input bg-white file-input-bordered w-full max-w-full text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <div className="label">
-            {file && (
+            {(formReportState.bukti || file) && (
               <Link
-                href={`${URL.createObjectURL(file) || formReportState.bukti}`}
+                href={file ? URL.createObjectURL(file) : formReportState.bukti}
                 target="_blank"
-                download={file.name || formReportState.bukti}
+                download={file?.name || formReportState.bukti}
               >
-                file selected: <b>{file.name || formReportState.bukti}</b>
+                File selected: <b>{file?.name || formReportState.bukti.split('/').pop()}</b>
               </Link>
             )}
-            <ZodErrors error={formAddState?.zodErrors?.bukti} />
+            <ZodErrors error={formAddState?.zodErrors?.bukti || formEditState?.zodErrors?.bukti} />
           </div>
         </label>
         <label className="form-control w-full max-w-full">
@@ -353,7 +383,7 @@ export default function Form() {
             className="textarea textarea-bordered bg-white h-40 w-full max-w-full text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <div className="label">
-            <ZodErrors error={formAddState?.zodErrors?.catatan} />
+            <ZodErrors error={formAddState?.zodErrors?.catatan || formEditState?.zodErrors?.catatan} />
           </div>
         </label>
         <div className="flex flex-row gap-2 justify-between mt-5">
