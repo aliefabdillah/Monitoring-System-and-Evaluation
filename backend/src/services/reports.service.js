@@ -19,6 +19,20 @@ async function getAll() {
   return new ApiSuccess(status.OK, 'GET REPORTS SUCCESS', reportsData);
 }
 
+async function getById(reportId) {
+  try {
+    const reportsData = await db.Report.findByPk(reportId);
+
+    if (!reportsData) {
+      throw new ApiError(status.NOT_FOUND, `Report with name ${reportId} not found`);
+    }
+
+    return new ApiSuccess(status.OK, 'GET REPORT SUCCES', reportsData);
+  } catch (error) {
+    throw new ApiError(error.statusCode || status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
 async function create(body, file) {
   try {
     const fileUrl = file.path;
@@ -34,9 +48,14 @@ async function create(body, file) {
   }
 }
 
-async function update(body, file, reportId) {
+async function update(req, reportId) {
   try {
+    const { file, body } = req;
     const updatedReport = await db.Report.findByPk(reportId);
+
+    if (!updatedReport) {
+      throw new ApiError(status.NOT_FOUND, `Report with name ${reportId} not found`);
+    }
 
     let fileUrl = updatedReport.bukti;
     if (file) {
@@ -50,7 +69,7 @@ async function update(body, file, reportId) {
 
     return new ApiSuccess(status.OK, 'UPDATE REPORT SUCCESS', updatedReport);
   } catch (error) {
-    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+    throw new ApiError(error.statusCode || status.INTERNAL_SERVER_ERROR, error.message);
   }
 }
 
@@ -73,12 +92,12 @@ async function statistic() {
       group: ['nama_program'],
     });
 
-    const distributionByRegion = await db.Report.findAll({
-      attributes: ['wilayah', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'jumlah_laporan']],
-      group: ['wilayah'],
+    const distributionByProvince = await db.Report.findAll({
+      attributes: ['provinsi', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'jumlah_laporan']],
+      group: ['provinsi'],
     });
 
-    return new ApiSuccess(status.OK, 'GET STATISTIC SUCCESS', { totalReports, recipientsPerProgram, distributionByRegion });
+    return new ApiSuccess(status.OK, 'GET STATISTIC SUCCESS', { totalReports, recipientsPerProgram, distributionByProvince });
   } catch (error) {
     throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
   }
@@ -90,4 +109,5 @@ module.exports = {
   update,
   remove,
   statistic,
+  getById,
 };
