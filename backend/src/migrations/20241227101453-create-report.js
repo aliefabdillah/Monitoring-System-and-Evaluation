@@ -16,7 +16,13 @@ module.exports = {
       jml_penerima: {
         type: Sequelize.BIGINT,
       },
-      wilayah: {
+      provinsi: {
+        type: Sequelize.STRING,
+      },
+      kabupaten_kota: {
+        type: Sequelize.STRING,
+      },
+      kecamatan: {
         type: Sequelize.STRING,
       },
       tgl_penyaluran: {
@@ -26,6 +32,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       catatan: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
+      alasan: {
         allowNull: true,
         type: Sequelize.STRING,
       },

@@ -15,10 +15,13 @@ module.exports = {
       {
         nama_program: 'BANSOS',
         jml_penerima: 200,
-        wilayah: '11,12,13',
+        provinsi: 'JAWA BARAT',
+        kabupaten_kota: 'BANDUNG',
+        kecamatan: 'RANCAEKEK',
         tgl_penyaluran: new Date(),
         bukti: 'http://image.url',
         catatan: '',
+        alasan: '',
         status: 'Pending',
       },
     ]);
