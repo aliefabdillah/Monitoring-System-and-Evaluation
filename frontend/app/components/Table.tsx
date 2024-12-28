@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { ListReport } from "../types/Report";
+import DeleteModal from "./DeleteModal";
 
 export default function Table({
   dataTable,
@@ -10,6 +11,8 @@ export default function Table({
   dataTable: ListReport[];
   searchValue: string;
 }) {
+  const [deletedId, setDeletedId] = useState("");
+
   const dataToRender = dataTable.filter((report) => {
     const matchesProgram = report.nama_program
       .toLowerCase()
@@ -28,6 +31,11 @@ export default function Table({
       matchesProgram || matchesProvince || matchesRegency || matchesDistrict
     );
   });
+
+  const handleBtnDelete = (id: string) => {
+    (document.getElementById("delete_modal")! as HTMLDialogElement).showModal();
+    setDeletedId(id);
+  };
 
   return (
     <div className="overflow-x-auto ">
@@ -100,7 +108,10 @@ export default function Table({
                           <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                         </svg>
                       </Link>
-                      <Link href={"#"} className="text-white">
+                      <button
+                        className="text-white"
+                        onClick={() => handleBtnDelete(report.id)}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
@@ -113,7 +124,7 @@ export default function Table({
                             clipRule="evenodd"
                           />
                         </svg>
-                      </Link>
+                      </button>
                     </>
                   )}
                 </td>
@@ -122,6 +133,7 @@ export default function Table({
           })}
         </tbody>
       </table>
+      <DeleteModal deletedId={deletedId} />
     </div>
   );
 }
