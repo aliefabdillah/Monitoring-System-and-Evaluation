@@ -6,19 +6,6 @@
         "use": "@vercel/node"
       }
     ],
-    "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
-    "env": {
-        "NODE_ENV": "development",
-        "PORT": "3001",
-        "DB_NAME": "postgres",
-        "DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
-        "DB_PORT": "6543",
-        "DB_USERNAME": "postgres.yfndsvzhfmhmxuiavujk",
-        "DB_PASSWORD": "TUYVBqWaWbL9E9HT",
-        "DB_DIALECT": "postgresql",
-        "CLOUDINARY_NAME": "dp7yp5kgv",
-        "CLOUDINARY_KEY": "853476929182856",
-        "CLOUDINARY_SECRET": "Q3uzuXdu7u0Gg9xSm4oe6vAEXK4"
-    }
+    "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
       
   }
