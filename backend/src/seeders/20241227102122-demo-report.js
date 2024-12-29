@@ -15,9 +15,9 @@ module.exports = {
       {
         nama_program: 'BST',
         jml_penerima: 200,
-        provinsi: 'JAWA BARAT',
-        kabupaten_kota: 'BANDUNG',
-        kecamatan: 'RANCAEKEK',
+        provinsi: '32',
+        kabupaten_kota: '3204',
+        kecamatan: '3204110',
         tgl_penyaluran: new Date(),
         bukti: 'http://image.url',
         catatan: '',
