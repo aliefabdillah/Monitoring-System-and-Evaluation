@@ -114,7 +114,7 @@ async function exportToExcel() {
   try {
     const reports = await db.Report.findAll();
 
-    const exportDir = path.resolve(__dirname, '../../exports');
+    const exportDir = '/tmp/exports';
 
     if (!fs.existsSync(exportDir)) {
       fs.mkdirSync(exportDir, { recursive: true });
@@ -154,7 +154,7 @@ async function exportToPDF() {
   try {
     const reports = await db.Report.findAll(); // Ambil data laporan dari database
 
-    const exportDir = path.resolve(__dirname, '../../exports');
+    const exportDir = '/tmp/exports';
 
     if (!fs.existsSync(exportDir)) {
       fs.mkdirSync(exportDir, { recursive: true });
