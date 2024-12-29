@@ -2,8 +2,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { status } = require('http-status');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const path = require('path');
+const XLSX = require('xlsx');
+const PDFDocument = require('pdfkit');
 const db = require('../models/index.js');
 const { ApiError, ApiSuccess } = require('../utils/apiResponse.js');
+const fetchWilayahName = require('../utils/fetchWilayahName.js');
 
 async function getAll() {
   const reportsData = await db.Report.findAll({
@@ -105,6 +110,112 @@ async function statistic() {
   }
 }
 
+async function exportToExcel() {
+  try {
+    const reports = await db.Report.findAll();
+
+    const exportDir = path.resolve(__dirname, '../../exports');
+
+    if (!fs.existsSync(exportDir)) {
+      fs.mkdirSync(exportDir, { recursive: true });
+    }
+
+    const resolvedReports = await Promise.all(
+      reports.map(async (report) => ({
+        Nama_Program: report.nama_program,
+        Jumlah_Penerima: report.jml_penerima,
+        Provinsi: await fetchWilayahName(report.provinsi, 'province'),
+        Kabupaten_Kota: await fetchWilayahName(report.kabupaten_kota, 'regency'),
+        Kecamatan: await fetchWilayahName(report.kecamatan, 'district'),
+        Tanggal_Penyaluran: report.tgl_penyaluran,
+        Bukti: report.bukti,
+        Alasan: report.alasan,
+        Catatan: report.catatan,
+        Status: report.status,
+      })),
+    );
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(resolvedReports);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Reports');
+
+    const filePath = path.join(exportDir, 'reports.xlsx');
+    XLSX.writeFile(workbook, filePath);
+
+    return new ApiSuccess(status.OK, 'EXPORT SUCCESS', { filePath, fileName: 'reports.xlsx' });
+  } catch (error) {
+    console.error(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
+async function exportToPDF() {
+  try {
+    const reports = await db.Report.findAll(); // Ambil data laporan dari database
+
+    const exportDir = path.resolve(__dirname, '../../exports');
+
+    if (!fs.existsSync(exportDir)) {
+      fs.mkdirSync(exportDir, { recursive: true });
+    }
+
+    const doc = new PDFDocument();
+    const filePath = './exports/reports.pdf';
+    const writableStream = fs.createWriteStream(filePath);
+
+    doc.pipe(writableStream);
+    doc.fontSize(16).text('Laporan Bantuan', { align: 'center' });
+    doc.moveDown();
+
+    const resolvedReports = await Promise.all(
+      reports.map(async (report) => {
+        const provinsi = await fetchWilayahName(report.provinsi, 'province');
+        const kabupatenKota = await fetchWilayahName(report.kabupaten_kota, 'regency');
+        const kecamatan = await fetchWilayahName(report.kecamatan, 'district');
+
+        return {
+          Nama_Program: report.nama_program,
+          Jumlah_Penerima: report.jml_penerima,
+          Provinsi: provinsi,
+          Kabupaten_Kota: kabupatenKota,
+          Kecamatan: kecamatan,
+          Tanggal_Penyaluran: report.tgl_penyaluran,
+          Bukti: report.bukti,
+          Alasan: report.alasan,
+          Catatan: report.catatan,
+          Status: report.status,
+        };
+      }),
+    );
+
+    resolvedReports.forEach((report, index) => {
+      doc.fontSize(12).text(`No: ${index + 1}`);
+      doc.text(`Nama Program: ${report.Nama_Program}`);
+      doc.text(`Jumlah Penerima: ${report.Jumlah_Penerima}`);
+      doc.text(`Wilayah: ${report.Provinsi}, ${report.Kabupaten_Kota}, ${report.Kecamatan}`);
+      doc.text(`Tanggal Penyaluran: ${report.Tanggal_Penyaluran}`);
+      doc.text(`Bukti: ${report.Bukti}`);
+      doc.text(`Catatan: ${report.Catatan}`);
+      doc.text(`Alasan: ${report.Alasan}`);
+      doc.text(`Status: ${report.Status}`);
+      doc.moveDown();
+    });
+
+    doc.end();
+
+    await new Promise((resolve, reject) => {
+      writableStream.on('finish', resolve);
+      writableStream.on('error', reject);
+    });
+
+    return new ApiSuccess(status.OK, 'EXPORT SUCCESS', { filePath, fileName: 'reports.pdf' });
+  } catch (error) {
+    console.error(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+}
+
 module.exports = {
   getAll,
   create,
@@ -112,4 +223,6 @@ module.exports = {
   remove,
   statistic,
   getById,
+  exportToExcel,
+  exportToPDF,
 };

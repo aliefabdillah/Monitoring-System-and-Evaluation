@@ -11,5 +11,7 @@ router.get('/admin/statistic', reportController.getStatistic);
 router.post('/', uploadFile.single('bukti'), validate('/create'), reportController.createReports);
 router.patch('/:reportId', uploadFile.single('bukti'), validate('/update'), reportController.updateReports);
 router.delete('/:reportId', reportController.deleteReport);
+router.get('/export/excel/', reportController.exportToExcel);
+router.get('/export/pdf/', reportController.exportToPDF);
 
 module.exports = router;

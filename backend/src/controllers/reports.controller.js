@@ -1,3 +1,4 @@
+const fs = require('fs');
 const reportService = require('../services/reports.service.js');
 
 async function getAllReports(req, res, next) {
@@ -54,6 +55,27 @@ async function getStatistic(req, res, next) {
   }
 }
 
+async function exportToExcel(req, res, next) {
+  try {
+    const exportResult = await reportService.exportToExcel(res);
+    res.download(exportResult.data.filePath, exportResult.data.fileName, () => {
+      fs.unlinkSync(exportResult.data.filePath);
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+async function exportToPDF(req, res, next) {
+  try {
+    const exportResult = await reportService.exportToPDF(res);
+    res.download(exportResult.data.filePath, exportResult.data.fileName, () => {
+      fs.unlinkSync(exportResult.data.filePath);
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getAllReports,
   getReportsById,
@@ -61,4 +83,6 @@ module.exports = {
   updateReports,
   deleteReport,
   getStatistic,
+  exportToExcel,
+  exportToPDF,
 };
