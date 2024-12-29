@@ -11,7 +11,7 @@ export default function BasePage({
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         {/* Navbar */}
-        <div className="navbar bg-base-200 w-full">
+        <div className="navbar bg-blue-400 text-white w-full">
           <div className="flex-none lg:hidden">
             <label
               htmlFor="my-drawer-3"
