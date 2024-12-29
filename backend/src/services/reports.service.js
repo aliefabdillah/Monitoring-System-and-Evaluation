@@ -161,7 +161,7 @@ async function exportToPDF() {
     }
 
     const doc = new PDFDocument();
-    const filePath = './exports/reports.pdf';
+    const filePath = path.join(exportDir, 'reports.pdf');
     const writableStream = fs.createWriteStream(filePath);
 
     doc.pipe(writableStream);
