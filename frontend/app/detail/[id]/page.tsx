@@ -5,21 +5,10 @@ import { reportsService } from "@/app/data/services";
 import { ApiError } from "@/app/types/ApiError";
 import { DetailReport } from "@/app/types/Report";
 import { convertIDDate } from "@/app/utils/dateFormatter";
+import { fetchWilayahName } from "@/app/utils/fetchWilayah";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-const fetchWilayahName = async (
-  id: string | undefined,
-  type: "province" | "district" | "regency"
-) => {
-  const response = await fetch(
-    `https://www.emsifa.com/api-wilayah-indonesia/api/${type}/${id}.json`
-  );
-
-  const data = await response.json();
-  return data.name;
-};
 
 export default function DetailPage() {
   const { id } = useParams();
