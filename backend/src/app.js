@@ -15,10 +15,8 @@ app.use(morgan('dev'));
 app.use(helmet());
 
 app.use(cors({
-  origin: ['https://monitoring-system-and-evaluation-4yjpgqq6g.vercel.app/', 'https://monitoring-system-and-evaluation-admin.vercel.app/'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'],
+  origin: '*',
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 app.use(
