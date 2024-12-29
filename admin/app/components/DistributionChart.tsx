@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Distribution } from "../types/Report";
 import {
@@ -12,18 +11,7 @@ import {
 } from "chart.js";
 import { Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
-
-const fetchWilayahName = async (
-  id: string | undefined,
-  type: "province" | "district" | "regency"
-) => {
-  const response = await fetch(
-    `https://www.emsifa.com/api-wilayah-indonesia/api/${type}/${id}.json`
-  );
-
-  const data = await response.json();
-  return data.name;
-};
+import { fetchWilayahName } from "../utils/fetchWilayah";
 
 export default function DistributionChart({
   distributionData,

@@ -4,18 +4,7 @@ import { ListReport } from "../types/Report";
 import DeleteModal from "./VerifiyModal";
 import EmptyPage from "./EmptyPage";
 import Link from "next/link";
-
-const fetchWilayahName = async (
-  id: string,
-  type: "province" | "district" | "regency"
-) => {
-  const response = await fetch(
-    `https://www.emsifa.com/api-wilayah-indonesia/api/${type}/${id}.json`
-  );
-
-  const data = await response.json();
-  return data.name;
-};
+import { fetchWilayahName } from "../utils/fetchWilayah";
 
 export default function Table({
   dataTable,
