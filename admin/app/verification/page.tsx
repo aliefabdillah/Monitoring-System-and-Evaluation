@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import BasePage from "../components/BasePage";
 import { ListReport } from "../types/Report";
@@ -7,6 +7,8 @@ import Loading from "../components/Loading";
 import Table from "../components/Table";
 import ErrorToast from "../components/ErrorToast";
 import { reportsService } from "../data/services";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function VerificationPage() {
   const [searchValue, setSearchValue] = useState("");
@@ -75,6 +77,16 @@ export default function VerificationPage() {
               />
             </svg>
           </label>
+          <div className="flex gap-2">
+            <Link href={'#'} className="btn btn-outline btn-success text-white">
+              <Image src="/xls.png" alt="excel" width={25} height={50} />
+              Excel
+            </Link>
+            <Link href={`${process.env.API_URL}/reports/export/pdf/`} className="btn btn-outline btn-error text-white">
+              <Image src="/pdf.png" alt="excel" width={25} height={50} />
+              PDF
+            </Link>
+          </div>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center mt-24">
