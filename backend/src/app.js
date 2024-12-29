@@ -14,13 +14,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 
-const corsOptions = {
+app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   credentials: true,
-};
-
-app.use(cors(corsOptions));
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'],
+}));
 app.use(express.json());
 app.use(
   express.urlencoded({ extended: true }),
