@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import React, { useActionState, useEffect, useState } from "react";
+import React, { Suspense, useActionState, useEffect, useState } from "react";
 import { addReport, updateReport } from "../data/actions/formReport";
 import ZodErrors from "./ZodErrors";
 import ErrorToast from "./ErrorToast";
@@ -179,7 +179,7 @@ export default function Form() {
   };
 
   return (
-    <>
+    <Suspense>
       <ModalLoadingLite isOpen={isLoading} />
       <SuccessModal message={formAddState?.message || formEditState?.message} />
       <ErrorToast
@@ -400,6 +400,6 @@ export default function Form() {
           </button>
         </div>
       </form>
-    </>
+    </Suspense>
   );
 }
