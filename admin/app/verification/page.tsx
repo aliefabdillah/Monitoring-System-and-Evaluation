@@ -78,7 +78,7 @@ export default function VerificationPage() {
             </svg>
           </label>
           <div className="flex gap-2">
-            <Link href={'#'} className="btn btn-outline btn-success text-white">
+            <Link href={`${process.env.API_URL}/reports/export/excel/`} className="btn btn-outline btn-success text-white">
               <Image src="/xls.png" alt="excel" width={25} height={50} />
               Excel
             </Link>
