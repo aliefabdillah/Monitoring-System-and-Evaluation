@@ -24,7 +24,7 @@ export type DetailReport = {
 
 export type Statistic = {
   totalReports: number;
-  recipientPerProgram: Recipient[],
+  recipientsPerProgram: Recipient[],
   distributionByProvince: Distribution[],
 };
 
@@ -34,6 +34,6 @@ export type Recipient = {
 }
 
 export type Distribution = {
-  provinsi: number,
+  provinsi: string,
   jumlah_laporan: number,
 }
