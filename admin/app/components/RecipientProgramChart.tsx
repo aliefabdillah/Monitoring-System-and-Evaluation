@@ -66,14 +66,10 @@ export default function RecipientProgramChart({
       },
     },
     animation: {
-      duration: 1500, 
+      duration: 1500,
       easing: "easeInBounce" as const,
     },
   };
 
-  return (
-    <div className={`flex justify-center items-center`}>
-      <Bar data={data} options={options}></Bar>
-    </div>
-  );
+  return <Bar data={data} options={options}></Bar>;
 }

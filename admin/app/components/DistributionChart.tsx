@@ -85,9 +85,5 @@ export default function DistributionChart({
     },
   };
 
-  return (
-    <div className={`flex justify-center items-center`}>
-      <Bar data={data} options={options}></Bar>
-    </div>
-  );
+  return <Bar data={data} options={options}></Bar>;
 }
