@@ -13,7 +13,7 @@ module.exports = {
     */
     return queryInterface.bulkInsert('Reports', [
       {
-        nama_program: 'BANSOS',
+        nama_program: 'BST',
         jml_penerima: 200,
         provinsi: 'JAWA BARAT',
         kabupaten_kota: 'BANDUNG',
