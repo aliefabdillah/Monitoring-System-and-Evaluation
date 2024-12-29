@@ -61,8 +61,7 @@ export default function DeleteModal({ deletedId }: { deletedId: string }) {
             Hapus Item
           </h1>
           <p className="mb-4 text-center">
-            Are you sure to delete{" "}
-            <span className="font-bold">{deletedId}</span>?
+            Apakah Anda yakin untuk menghapus laporan ini?
           </p>
           <div className="card-actions justify-center">
             <form method="dialog">
