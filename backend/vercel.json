@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
       {
-        "src": "api/index.js",
+        "src": "./src/index.js",
         "use": "@vercel/node"
       }
     ],
     "routes": [
         {
         "src": "/(.*)",
-        "dest": "src/index.js"
+        "dest": "./src/index.js"
         }
     ],
     "env": {
@@ -24,6 +24,7 @@
         "CLOUDINARY_NAME": "dp7yp5kgv",
         "CLOUDINARY_KEY": "853476929182856",
         "CLOUDINARY_SECRET": "Q3uzuXdu7u0Gg9xSm4oe6vAEXK4"
-    }
+    },
+    "rewrites": [{ "source": "/api/(.*)", "destination": "./src" }]
       
   }
